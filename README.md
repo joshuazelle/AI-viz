@@ -15,3 +15,15 @@ blackbox:
 - find 'abliterated' version
 - find dataset/benchmark of harmful prompts
 - find model to do classification of outputs (was this a refusal? yes/no), inputs (what kind of request was this? category: )
+
+## environment:
+We use [uv](https://docs.astral.sh/uv/) to manage Python and dependencies. Everything is pinned in `uv.lock`, so we all get the same versions.
+if you need to install:
+```
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+then:
+```
+uv sync                # Windows/Linux
+uv sync --extra mac    # Mac, includes mlx-lm
+```
