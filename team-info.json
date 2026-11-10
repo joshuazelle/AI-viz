@@ -1,0 +1,33 @@
+{
+    "team_name": "The Control Group",
+    "students": [
+        {
+            "student_id": "k12446281",
+            "first_name": "Joe",
+            "last_name": "Dorfman",
+            "email": "joedorfman@gmail.com",
+            "github_user": "joedorfman"
+        },
+        {
+            "student_id": "k11922754",
+            "first_name": "Joshua",
+            "last_name": "Zelle",
+            "email": "joshuazelle1@gmail.com",
+            "github_user": "joshuazelle"
+        },
+        {
+            "student_id": "k12215861",
+            "first_name": "Kacper",
+            "last_name": "Zaleski",
+            "email": "kacperzaleski1@gmail.com",
+            "github_user": "kacperzaleski"
+        },
+        {
+            "student_id": "TODO",
+            "first_name": "Adrian",
+            "last_name": "Kaiser",
+            "email": "TODO",
+            "github_user": "artificiadrian"
+        }
+    ]
+}
