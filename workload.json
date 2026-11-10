@@ -1,0 +1,25 @@
+{
+    "team_name": "The Control Group",
+    "students": [
+        {
+            "first_name": "Joe",
+            "last_name": "Dorfman",
+            "workload": 0.25
+        },
+        {
+            "first_name": "Joshua",
+            "last_name": "Zelle",
+            "workload": 0.25
+        },
+        {
+            "first_name": "Kacper",
+            "last_name": "Zaleski",
+            "workload": 0.25
+        },
+        {
+            "first_name": "Adrian",
+            "last_name": "Kaiser",
+            "workload": 0.25
+        }
+    ]
+}
