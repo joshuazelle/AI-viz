@@ -1,0 +1,103 @@
+/* Color roles. Charts reference these by role, never by raw hex.
+   Outcome palette validated all-pairs (light + dark) with the dataviz validator. */
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --surface-2: #f3f2ee;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #7a7873;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+
+  --o-refusal: #256abf;
+  --o-safe: #1baf7a;
+  --o-borderline: #eda100;
+  --o-harmful: #d03b3b;
+  --on-refusal: #ffffff;
+  --on-safe: #0b0b0b;
+  --on-borderline: #0b0b0b;
+  --on-harmful: #ffffff;
+
+  --cond-base: #8a8882;
+  --cond-abl: #6250d6;
+  --accent: #6250d6;
+
+  --dot-neutral: #c3c2b7;
+  --dot-faint: #e7e6e0;
+  --sev-1: #a8a69e;
+  --sev-2: #6f6d67;
+  --sev-3: #3a3935;
+
+  /* sequential "harmful rate" ramp, near-zero recedes into the surface */
+  --heat-0: #f6e9e6;
+  --heat-1: #e8968a;
+  --heat-2: #d03b3b;
+  --heat-3: #8e1f1f;
+
+  --tooltip-bg: #0b0b0b;
+  --tooltip-ink: #f0efec;
+  --shadow: 0 1px 2px rgba(11, 11, 11, 0.06), 0 8px 24px rgba(11, 11, 11, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --surface-2: #232321;
+    --ink: #f0efec;
+    --ink-2: #c3c2b7;
+    --muted: #96948d;
+    --grid: #2c2c2a;
+    --axis: #45443f;
+    --border: rgba(255, 255, 255, 0.10);
+    --o-borderline: #c98500;
+    --cond-base: #8a8882;
+    --cond-abl: #9085e9;
+    --accent: #9085e9;
+    --dot-neutral: #55544f;
+    --dot-faint: #2a2a28;
+    --sev-1: #5a5954;
+    --sev-2: #9a988f;
+    --sev-3: #dcdad1;
+    --heat-0: #2a2221;
+    --heat-1: #6e2a26;
+    --heat-2: #b8433b;
+    --heat-3: #f39a8e;
+    --tooltip-bg: #f0efec;
+    --tooltip-ink: #0b0b0b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d;
+  --surface: #1a1a19;
+  --surface-2: #232321;
+  --ink: #f0efec;
+  --ink-2: #c3c2b7;
+  --muted: #96948d;
+  --grid: #2c2c2a;
+  --axis: #45443f;
+  --border: rgba(255, 255, 255, 0.10);
+  --o-borderline: #c98500;
+  --cond-base: #8a8882;
+  --cond-abl: #9085e9;
+  --accent: #9085e9;
+  --dot-neutral: #55544f;
+  --dot-faint: #2a2a28;
+  --sev-1: #5a5954;
+  --sev-2: #9a988f;
+  --sev-3: #dcdad1;
+  --heat-0: #2a2221;
+  --heat-1: #6e2a26;
+  --heat-2: #b8433b;
+  --heat-3: #f39a8e;
+  --tooltip-bg: #f0efec;
+  --tooltip-ink: #0b0b0b;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+}

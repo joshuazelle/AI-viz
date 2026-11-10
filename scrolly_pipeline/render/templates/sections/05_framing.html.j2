@@ -1,0 +1,24 @@
+{% from "macros.html.j2" import figure, chapter_head %}
+<section class="chapter" id="framing" aria-labelledby="h-framing">
+  <div class="prose">
+    {{ chapter_head("5 · From the outside", "A story is enough") }}
+    <p id="h-framing">
+      You don’t need to open the model up to get around its refusals. Six of the framings wrap a request in role-play, a hypothetical, an encoding or a claim of authority, 30 to 40 prompts each.
+      Against the original model, most of them achieve nothing. One stands out:
+      put the request inside a story, and the model answered harmfully <strong>{{ f.fictional.baseline.k }} out of {{ f.fictional.baseline.n }}</strong> times
+      ({{ f.fictional.baseline.rate|pct }}; 95% interval {{ f.fictional.baseline.lo|pct }}–{{ f.fictional.baseline.hi|pct }}).
+      Asked directly, it did so {{ f.direct.baseline.k }} times out of {{ f.direct.baseline.n }}.
+    </p>
+    <p>
+      With 30 prompts per framing, read the intervals, not the dots. Only the fictional frame’s interval clears the direct-request rate by a wide margin.
+      After ablation the ranking reshuffles. {{ f.framing_abl_max.label }}{% if f.framing_abl_max.baseline.k == 0 %}, useless against the original model,{% endif %} becomes the most effective framing
+      ({{ f.framing_abl_max.ablation.rate|pct }}), while {{ f.framing_abl_min.label|lower }} does worst ({{ f.framing_abl_min.ablation.rate|pct }}),
+      perhaps because a small model struggles to decode a disguised request at all.
+    </p>
+  </div>
+  <div class="wide">
+    {{ figure("framing", "Harmful-answer rate by framing, with 95% intervals",
+              sub="Dots are rates; lines are Wilson 95% intervals. Sorted by the original model’s rate.",
+              note="Framed prompts are spread evenly over the ten categories (20 per category across all framings), so the comparison with direct requests is roughly like for like.") }}
+  </div>
+</section>

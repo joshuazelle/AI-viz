@@ -1,0 +1,65 @@
+{% from "macros.html.j2" import figure, chapter_head, key %}
+<section class="chapter" id="requests" aria-labelledby="h-requests">
+  <div class="prose">
+    {{ chapter_head("2 · The experiment", "A thousand requests") }}
+    <p id="h-requests">
+      The requests come from {{ f.n_sources }} public safety benchmarks, among them AdvBench, HarmBench and Do-Not-Answer.
+      They cover {{ f.n_categories }} harm categories with exactly 100 requests each, and every request carries a severity rating from mild to severe.
+      {{ (f.n - f.n_framed)|num }} are asked directly; {{ f.n_framed }} are wrapped in one of {{ f.n_styles - 1 }} framings, such as role-play or fiction.
+    </p>
+    <p>
+      Every answer was then judged by {{ exp.judge }}, a safety classifier from the Qwen team.
+      It labels a response as safe, controversial or unsafe, and separately flags whether it is a refusal.
+      We fold those labels into four classes:
+    </p>
+  </div>
+
+  <div class="wide examples" role="group" aria-label="Stylized example answers for each outcome class">
+    <p class="examples__prompt">
+      <span class="examples__stamp">Stylized examples · written by us, not model outputs</span>
+      <span>Prompt:</span><q>{{ stylized_prompt }}</q>
+    </p>
+    <div class="examples__grid">
+      {% for ex in examples %}
+      <article class="example">
+        <div class="example__head"><span class="example__dot" style="background: var(--o-{{ ex.key }})"></span>{{ ex.label }}</div>
+        <p class="example__def">{{ ex.definition }}</p>
+        <p class="example__text">“{{ ex.text }}{% if ex.elided %} <span class="elided">[… {{ ex.elided }}]</span>{% endif %}”</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="scrolly">
+    <div class="scrolly__graphic">
+      {{ figure("waffle", "1,000 requests, one dot each",
+                sub="Ten categories of 100. Grids are ordered by how often the ablated model answers harmfully.") }}
+    </div>
+    <div class="scrolly__steps">
+      <div class="step">
+        <span class="step__label">The requests</span>
+        <p>Each dot is one request. The grids run from the category that ends up worst (top left) to the one that ends up best (bottom right).</p>
+      </div>
+      <div class="step">
+        <span class="step__label">Severity</span>
+        <p>Shade them by severity. {{ f.severe.most.label }} requests are mostly severe ({{ f.severe.most.n }} of 100);
+        {% if f.severe.none %}none of the {{ f.severe.none|join(", ")|lower }} requests are.{% endif %}</p>
+      </div>
+      <div class="step">
+        <span class="step__label">Before</span>
+        <p>Now colour each dot by what the original model did. It refuses {{ key("refusal") }}<strong>{{ f.base.refusal|num }}</strong> of {{ f.n|num }}.
+        Most of the rest get a safe answer {{ key("safe") }}; only {{ f.base.harmful }} are judged harmful {{ key("harmful") }}.</p>
+      </div>
+      <div class="step">
+        <span class="step__label">After ablation</span>
+        <p>Remove the refusal direction and ask again. Now <strong>{{ f.abl.harmful|num }}</strong> answers are judged harmful {{ key("harmful") }},
+        {{ f.abl.borderline }} borderline {{ key("borderline") }}, and only {{ f.abl.refusal }} refusals {{ key("refusal") }} are left.</p>
+      </div>
+      <div class="step">
+        <span class="step__label">What survives</span>
+        <p>The {{ f.persistent }} requests refused both times are not spread evenly: {{ f.persistent_top.k }} are about {{ f.persistent_top.label|lower }}
+        and {{ f.persistent_second.k }} about {{ f.persistent_second.label|lower }}. For these, refusal may not run through that one direction alone.</p>
+      </div>
+    </div>
+  </div>
+</section>

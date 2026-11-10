@@ -14,3 +14,9 @@ dependencies = [
 mac = [
     "mlx-lm>=0.32.2 ; sys_platform == 'darwin'",
 ]
+
+[dependency-groups]
+viz = [
+    "jinja2>=3.1.6",
+    "playwright>=1.65.0",
+]

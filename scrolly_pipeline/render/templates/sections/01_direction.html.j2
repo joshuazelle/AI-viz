@@ -1,0 +1,52 @@
+{% from "macros.html.j2" import figure, chapter_head %}
+<section class="chapter" id="direction" aria-labelledby="h-direction">
+  <div class="prose">
+    {{ chapter_head("1 · The mechanism", "One direction") }}
+    <p class="lead" id="h-direction">
+      Chat models are trained to say no. Ask {{ exp.model }}, a small open-weight model from Alibaba’s Qwen team, how to hurt someone, and it declines politely.
+    </p>
+    <p>
+      Where in the network does that behaviour live? In 2024, Andy Arditi and colleagues found a surprisingly simple answer.
+      Across thirteen open chat models, refusal is mediated by one direction in the model’s internal activations.
+      Push the activations along it and a model refuses harmless requests. Remove it and the model complies with harmful ones.
+    </p>
+  </div>
+
+  <div class="scrolly">
+    <div class="scrolly__graphic">
+      {{ figure("explainer", "Removing a direction, sketched in two dimensions",
+                sub="Illustration only: synthetic points, not real activations.", table=False) }}
+    </div>
+    <div class="scrolly__steps">
+      <div class="step">
+        <span class="step__label">The space</span>
+        <p>A language model turns every token into a long list of numbers: a point in a space with thousands of dimensions.
+        We can’t draw that, so here is a two-dimensional sketch. Each dot stands for the model’s activation on one prompt.</p>
+      </div>
+      <div class="step">
+        <span class="step__label">Two clouds</span>
+        <p>Feed it harmful instructions <span class="key" style="background: var(--ink)"></span> and harmless ones <span class="key key--ring"></span>,
+        and the two kinds of prompt land in different regions of that space.</p>
+      </div>
+      <div class="step">
+        <span class="step__label">The refusal direction</span>
+        <p>Average each cloud and subtract one average from the other. What is left is a single vector: the <strong>refusal direction</strong>, written <em>r̂</em>.
+        The model reads its position along <em>r̂</em> as “this is a request I should turn down.”</p>
+      </div>
+      <div class="step">
+        <span class="step__label">Directional ablation</span>
+        <p>Now remove that component from every activation, at every layer and every token:
+        <span class="formula">x′ = x − (r̂·x) r̂</span>.
+        Both clouds collapse onto the line perpendicular to <em>r̂</em>.
+        Nothing is retrained, and everything else the model has learned stays where it was.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      We ran exactly this procedure on {{ exp.model }}, using the authors’ original <code>refusal_direction</code> code adapted to the Qwen3 architecture and run locally.
+      Then we asked both versions, the original and the ablated one, the same {{ f.n|num }} requests.
+    </p>
+  </div>
+</section>

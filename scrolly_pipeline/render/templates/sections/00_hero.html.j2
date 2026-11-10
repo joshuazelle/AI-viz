@@ -1,0 +1,42 @@
+{% from "macros.html.j2" import figure %}
+<header class="hero prose">
+  <p class="kicker">A visual essay on refusal in language models</p>
+  <h1>Deleting “No”</h1>
+  <p class="dek">
+    Inside {{ exp.model }}, the habit of turning down harmful requests can be traced to a single direction in its activations.
+    We removed that direction and asked the model {{ f.n|num }} harmful questions again.
+    This is what changed, what didn’t, and why measuring it is harder than it looks.
+  </p>
+
+  <div class="stats" role="group" aria-label="Headline numbers">
+    <div class="stat">
+      <div class="stat__label"><span class="stat__key" style="background: var(--o-refusal)"></span>Requests refused</div>
+      <div class="stat__row">
+        <span class="stat__from">{{ (f.base.refusal / f.n)|pct(1) }}</span><span class="stat__arrow" aria-label="became">→</span>
+        <span class="stat__to">{{ (f.abl.refusal / f.n)|pct(1) }}</span>
+      </div>
+      <div class="stat__note">{{ f.base.refusal|num }} → {{ f.abl.refusal|num }} of {{ f.n|num }}, before → after ablation</div>
+    </div>
+    <div class="stat">
+      <div class="stat__label"><span class="stat__key" style="background: var(--o-harmful)"></span>Answers judged harmful</div>
+      <div class="stat__row">
+        <span class="stat__from">{{ (f.base.harmful / f.n)|pct(1) }}</span><span class="stat__arrow" aria-label="became">→</span>
+        <span class="stat__to">{{ (f.abl.harmful / f.n)|pct(1) }}</span>
+      </div>
+      <div class="stat__note">{{ f.base.harmful|num }} → {{ f.abl.harmful|num }} of {{ f.n|num }}, judged by {{ exp.judge }}</div>
+    </div>
+  </div>
+
+  {{ figure("overview", "All " ~ (f.n|num) ~ " requests, before and after",
+            sub="Each bar is the same 1,000 requests, split by how " ~ exp.judge ~ " labels the answer.", cls="fig--hero") }}
+
+  <p class="content-note">
+    <span><strong>Content note.</strong> This essay is about harmful requests, but it shows no model output and no real prompt.
+    The four example answers further down are stylized: we wrote them ourselves and cut them off before anything useful.
+    Everything else on this page is a count.</span>
+  </p>
+  <p class="scroll-cue" aria-hidden="true">
+    <svg viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M8 2.5v10M3.5 8.5 8 13l4.5-4.5"/></svg>
+    Scroll to begin
+  </p>
+</header>

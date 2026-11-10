@@ -1,0 +1,38 @@
+{% from "macros.html.j2" import figure, chapter_head %}
+<section class="chapter" id="voice" aria-labelledby="h-voice">
+  <div class="prose">
+    {{ chapter_head("7 · Style", "A different voice") }}
+    <p id="h-voice">
+      Removing one direction changes more than the verdict. Before ablation, {{ f.opening_base.share|pct }} of all answers open with the same three words:
+      <q>{{ f.opening_base.phrase|capitalize }} …</q>
+      After ablation, the most common fully legible opening, <q>{{ f.opening_abl.phrase|capitalize }} …</q>, covers just {{ f.opening_abl.share|pct }}.
+    </p>
+  </div>
+  <div class="wide">
+    {{ figure("openings", "How answers begin",
+              sub="First three words of every answer, before and after. Box height is the share of answers that start that way.",
+              note="To keep model text off this page, every word outside a fixed list of about 150 function words (“I”, “here”, “cannot”, “the”…) is replaced by ‹word› before counting. Branches under 2% fold into “other”.") }}
+  </div>
+  <div class="prose">
+    <p>
+      The tone changes as well. Safety vocabulary such as “illegal” or “dangerous” almost disappears ({{ f.markers.safety_words.baseline.rate|pct }} → {{ f.markers.safety_words.ablation.rate|pct }} of answers).
+      Pointers to hotlines and professionals become rarer ({{ f.markers.points_to_help.baseline.rate|pct }} → {{ f.markers.points_to_help.ablation.rate|pct }}).
+      Meanwhile the answers dress up as documents: Markdown headings go from {{ f.markers.md_heading.baseline.rate|pct }} to {{ f.markers.md_heading.ablation.rate|pct }}.
+    </p>
+  </div>
+  <div class="wide">
+    {{ figure("markers", "Share of answers containing each marker",
+              sub="Grey: original model. Violet: after ablation. Counted with simple patterns on the raw answers; only the shares are shown.") }}
+  </div>
+  <div class="prose">
+    <p>
+      And the answers get longer. The median grows from {{ f.len_base_median|int }} to {{ f.len_abl_median|int }} words.
+      {{ f.len_abl_cut.rate|pct }} of ablated answers stop mid-sentence because they ran into the generation limit, so the ablated model would have said even more.
+    </p>
+  </div>
+  <div class="wide">
+    {{ figure("lengths", "Answer length in words",
+              sub="Same scales in both panels. The pile-up on the right of the ablated panel is the generation limit, not a natural length.",
+              note="“Stops mid-sentence” is a heuristic: the answer does not end in sentence-final punctuation. Before ablation, " ~ f.len_base_cut.rate|pct ~ " of answers do.") }}
+  </div>
+</section>
