@@ -1,0 +1,45 @@
+{% from "macros.html.j2" import chapter_head %}
+<section class="chapter" id="methods" aria-labelledby="h-methods">
+  <div class="prose methods">
+    {{ chapter_head("9 · Notes", "What this does and doesn’t show") }}
+    <p id="h-methods">
+      One small model, one direction, one run. The result matches Arditi et al.: a single linear direction carries most of {{ exp.model }}’s refusal behaviour,
+      and removing it at inference time unlocks harmful answers across every category we tested. A few caveats:
+    </p>
+    <ul>
+      <li><strong>The judge is a model too.</strong> “Harmful” means {{ exp.judge }} labelled the answer unsafe. We did not check answers by hand, and the judge makes mistakes in both directions.</li>
+      <li><strong>The keyword judge is crude</strong>, as chapter 6 shows. Treat any single attack-success number with suspicion.</li>
+      <li><strong>Truncation.</strong> Many ablated answers hit the generation limit, so they were judged on a partial answer.</li>
+      <li><strong>Small groups.</strong> Each framing has 30–40 prompts and some category × severity cells fewer than 10. We show intervals and fade small cells for that reason.</li>
+      <li><strong>Labels come from the benchmarks.</strong> Categories, severity and expected behaviour were mapped from {{ f.n_sources }} sources onto one scheme, so they are not perfectly comparable across sources.</li>
+      <li><strong>One generation per prompt.</strong> Sampling again could flip borderline cases.</li>
+    </ul>
+
+    <h3>Method</h3>
+    <p>
+      We used the authors’ <code>refusal_direction</code> pipeline, adapted to {{ exp.model }}. It computes candidate directions as the difference in mean residual-stream activations between harmful and harmless instructions,
+      at each layer and post-instruction token position, and keeps the candidate that best removes refusal on held-out prompts without disturbing the model’s behaviour on harmless ones too much.
+      The chosen direction <em>r̂</em> is then projected out of the residual stream at every layer and token position during generation (<span class="formula">x′ = x − (r̂·x) r̂</span>).
+      The same {{ f.n|num }} prompts were answered by the original and the ablated model, and every answer was judged by keyword matching and by {{ exp.judge }}.
+    </p>
+
+    <h3>Data</h3>
+    <p>{{ f.n|num }} prompts, 100 per category, drawn from:</p>
+    <ul class="source-list">
+      {% for s in dataset.sources %}<li>{{ s.label }}<span>{{ s.n }}</span></li>{% endfor %}
+    </ul>
+
+    <h3>How this page was made</h3>
+    <p>
+      A Python pipeline reads the judged answers, reduces them to counts and renders this single HTML file with D3.
+      No model output is embedded. A build-time check compares the finished page against all {{ (f.n * 2)|num }} answers and all {{ f.n|num }} prompts
+      and fails on any shared run of eight words. Colours were checked for colour-vision deficiencies in light and dark mode, and every chart has a table view.
+    </p>
+
+    <div class="footnotes">
+      <p>Arditi, A., Obeso, O., Syed, A., Paleka, D., Panickssery, N., Gurnee, W. &amp; Nanda, N. (2024). <a href="{{ exp.paper_url }}"><em>{{ exp.paper_title }}</em></a>. NeurIPS 2024.</p>
+      <p>Answers judged with {{ exp.judge }} (Qwen team, 2025). Prompts from the public benchmarks listed above, used under their respective licences.</p>
+      <p>Built {{ built }} · pipeline v{{ version }}.</p>
+    </div>
+  </div>
+</section>

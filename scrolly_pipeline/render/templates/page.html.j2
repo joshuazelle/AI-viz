@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Deleting “No”</title>
+<meta name="description" content="{{ description }}">
+<meta property="og:title" content="Deleting “No”">
+<meta property="og:description" content="{{ description }}">
+<meta property="og:type" content="article">
+<style>
+{{ css }}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the essay</a>
+<header class="topbar">
+  <span class="topbar__title">Deleting “No” · refusal in {{ exp.model }}</span>
+  <button class="theme-toggle" type="button" aria-label="Switch theme">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm0 1.5v11a5.5 5.5 0 0 1 0-11Z"/></svg>
+    <span>Theme</span>
+  </button>
+  <span class="topbar__progress" aria-hidden="true"></span>
+</header>
+
+<main id="main">
+{% include "sections/00_hero.html.j2" %}
+{% include "sections/01_direction.html.j2" %}
+{% include "sections/02_requests.html.j2" %}
+{% include "sections/03_flows.html.j2" %}
+{% include "sections/04_where.html.j2" %}
+{% include "sections/05_framing.html.j2" %}
+{% include "sections/06_judges.html.j2" %}
+{% include "sections/07_voice.html.j2" %}
+{% include "sections/08_safe.html.j2" %}
+{% include "sections/09_methods.html.j2" %}
+</main>
+
+<div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+<dialog id="table-dialog" class="table-dialog" aria-labelledby="table-dialog-title">
+  <div class="table-dialog__head">
+    <p class="table-dialog__title" id="table-dialog-title"></p>
+    <form method="dialog"><button class="table-toggle" type="submit" autofocus>Close</button></form>
+  </div>
+  <div class="table-view"></div>
+</dialog>
+<script id="viz-data" type="application/json">{{ data_json }}</script>
+<script>{{ d3 }}</script>
+<script>
+{{ js }}
+</script>
+</body>
+</html>

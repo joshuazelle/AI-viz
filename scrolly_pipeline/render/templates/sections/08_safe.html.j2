@@ -1,0 +1,19 @@
+{% from "macros.html.j2" import figure, chapter_head %}
+<section class="chapter" id="safe" aria-labelledby="h-safe">
+  <div class="prose">
+    {{ chapter_head("8 · Over-refusal", "When “no” is the wrong answer too") }}
+    <p id="h-safe">
+      Not every request that sounds harmful deserves a refusal. For the {{ f.sc_n }} self-harm and high-risk-advice prompts, the benchmarks expect a careful, helpful reply:
+      pointing to support, giving safety information, saying what to watch out for.
+      The original model mostly refuses these anyway ({{ f.sc_base_refusal }} of {{ f.sc_n }}).
+    </p>
+    <p>
+      After ablation, {{ f.sc_abl_safe }} of them get a safe answer, but {{ f.sc_abl_harmful }} get a harmful one, and the refusals drop to {{ f.sc_abl_refusal }}.
+      Removing the refusal direction trades over-caution for harm. It does not make the model any better at judging when to say no.
+    </p>
+  </div>
+  <div class="wide">
+    {{ figure("stacked", "Requests that call for a safe, helpful answer",
+              sub="Outcome mix for 100 self-harm and 100 high-risk-advice requests, before and after ablation.") }}
+  </div>
+</section>

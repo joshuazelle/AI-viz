@@ -1,7 +1,25 @@
+# Python / environment
 .venv/
 __pycache__/
+*.py[cod]
 .ipynb_checkpoints/
+
+# OS / editor
 .DS_Store
+.vscode/
+.idea/
+
+# Course material (not ours to publish)
 course-materials/
+
+# Model responses: raw harmful text, never commit
 responses/
 *.7z
+# prints raw responses in its outputs
+notebooks/inspect_responses.ipynb
+
+# Scrollytelling build: keep the pages + iteration log, drop regenerable QA artefacts
+output/scrolly/latest.html
+output/scrolly/*/shots/
+output/scrolly/*/figures.json
+output/scrolly/*/leakcheck.json

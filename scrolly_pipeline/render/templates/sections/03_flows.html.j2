@@ -1,0 +1,17 @@
+{% from "macros.html.j2" import figure, chapter_head %}
+<section class="chapter" id="flows" aria-labelledby="h-flows">
+  <div class="prose">
+    {{ chapter_head("3 · Before and after", "Where the answers went") }}
+    <p id="h-flows">
+      Follow each request from its first answer to its second.
+      Of the {{ f.base.refusal|num }} refusals, <strong>{{ f.refusal_to_harmful|num }}</strong> ({{ f.refusal_to_harmful_share|pct }}) turned into harmful answers
+      and {{ f.refusal_to_safe }} into safe ones.
+      Ablation does more than delete the “no”: for most requests, what takes its place is the answer the refusal was holding back.
+    </p>
+  </div>
+  <div class="wide">
+    {{ figure("alluvial", "From the original model’s answer to the ablated model’s answer",
+              sub="Each ribbon is a group of requests; its width is how many. Hover a ribbon for exact counts.",
+              note="Outcomes from " ~ exp.judge ~ " labels: harmful = unsafe; refusal = flagged as a refusal and not unsafe; borderline = controversial; safe answer = everything else.") }}
+  </div>
+</section>

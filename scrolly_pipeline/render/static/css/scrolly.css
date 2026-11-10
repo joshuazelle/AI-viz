@@ -1,0 +1,77 @@
+/* Sticky-graphic scrollytelling: steps on the left, graphic pinned on the right.
+   Below 900px the graphic pins to the top and the steps pass underneath it. */
+:root { --topbar-h: 45px; }
+
+.scrolly {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(300px, 390px) minmax(0, 1fr);
+  gap: 56px;
+  max-width: 1240px;
+  margin: 8px auto 0;
+  padding: 0 24px;
+}
+.scrolly__steps { position: relative; z-index: 2; padding: 34vh 0 56vh; }
+/* The pinned area is a fixed-height frame; the figure inside sizes to its content
+   (charts read the free height from the frame) and sits vertically centred. */
+.scrolly__graphic {
+  position: sticky;
+  top: calc(var(--topbar-h) + 2vh);
+  height: calc(100vh - var(--topbar-h) - 4vh);
+  height: calc(100svh - var(--topbar-h) - 4vh);
+  align-self: start;
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.scrolly__steps { grid-column: 1; grid-row: 1; }
+.scrolly__graphic > .fig { margin: 0; max-height: 100%; }
+
+.step {
+  margin: 0 0 62vh;
+  padding: 18px 20px 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  font-family: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  opacity: 0.5;
+  transition: opacity 0.35s ease;
+}
+.step:last-child { margin-bottom: 0; }
+.step.is-active { opacity: 1; }
+.step__label {
+  display: block; font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 6px;
+}
+.step .key {
+  display: inline-block; width: 0.62em; height: 0.62em; border-radius: 50%;
+  vertical-align: 0.02em; margin: 0 0.2em 0 0.05em;
+}
+.step .key--ring { background: transparent !important; border: 2px solid var(--ink); }
+
+@media (max-width: 899px) {
+  .scrolly { display: block; padding: 0; margin-top: 0; }
+  .scrolly__graphic {
+    top: var(--topbar-h);
+    height: 58vh;
+    height: 58svh;
+    z-index: 3;
+    padding: 8px 12px 10px;
+    background: var(--page);
+    box-shadow: 0 10px 12px -12px rgba(0, 0, 0, 0.25);
+  }
+  .scrolly__graphic > .fig > .fig__body { padding: 10px 10px 6px; }
+  .scrolly__graphic .fig__head { margin-bottom: 6px; }
+  .scrolly__graphic .fig__title { font-size: 0.9375rem; }
+  .scrolly__graphic .fig__sub,
+  .scrolly__graphic .fig__foot { display: none; }
+  .scrolly__graphic .legend { margin-bottom: 6px; gap: 4px 12px; font-size: 0.75rem; }
+  .scrolly__steps { z-index: 1; padding: 4vh 16px 30vh; }
+  .step { margin-bottom: 42vh; font-size: 1rem; opacity: 1; padding: 14px 16px 2px; }
+}

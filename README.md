@@ -27,3 +27,15 @@ then:
 uv sync                # Windows/Linux
 uv sync --extra mac    # Mac, includes mlx-lm
 ```
+
+## scrollytelling page
+A visual essay on the baseline vs. ablated Qwen3-4B responses, built by `scrolly_pipeline/` into a single self-contained HTML file. It shows only aggregates and stylized examples, and a build-time leak check fails if the page shares any 8-word run with a prompt or model answer.
+
+Final version: `output/scrolly/v05/index.html` (iteration notes in `output/scrolly/ITERATIONS.md`).
+
+To rebuild (needs `responses.7z` extracted into `responses/`):
+```
+uv sync --group viz            # add --extra mac on Mac
+uv run --group viz python -m scrolly_pipeline build
+```
+Each build goes to the next `output/scrolly/vNN/`, with screenshots and QA reports in `vNN/shots/` (not committed).

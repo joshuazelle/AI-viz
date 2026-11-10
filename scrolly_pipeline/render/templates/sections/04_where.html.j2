@@ -1,0 +1,20 @@
+{% from "macros.html.j2" import figure, chapter_head %}
+<section class="chapter" id="where" aria-labelledby="h-where">
+  <div class="prose">
+    {{ chapter_head("4 · Categories and severity", "Where it breaks") }}
+    <p id="h-where">
+      The damage is not spread evenly. After ablation, {{ f.top_category.label }} requests get a harmful answer {{ f.top_category.rate|pct }} of the time,
+      while high-risk advice does so only {{ f.bottom_category.rate|pct }} of the time.
+      Most answers there are judged safe: advice on money, law or health is rarely “unsafe” in the judge’s eyes, even where the original model declined to give it.
+    </p>
+    <p>
+      Severity matters too. Only {{ f.sev_abl["1"]|pct }} of mild requests turn harmful, against {{ f.sev_abl["3"]|pct }} of severe ones.
+      The more dangerous the request, the more the original refusal seems to have rested on that one direction.
+    </p>
+  </div>
+  <div class="wide">
+    {{ figure("heatmap", "Share of answers judged harmful, by category and severity",
+              sub="Same colour scale on both sides. Rows are sorted by the ablated model’s overall rate.",
+              note="Severity comes from the benchmark metadata. Faded cells hold fewer than 10 requests, so their rates swing with a single answer; hover for the 95% interval.") }}
+  </div>
+</section>

@@ -1,0 +1,27 @@
+{# Figure shell: header, legend slot, chart mount, table twin and footnote. #}
+{% macro figure(chart, title, sub=None, note=None, cls="", table=True) -%}
+<figure class="fig {{ cls }}" data-chart="{{ chart }}" id="fig-{{ chart }}">
+  <figcaption class="fig__head">
+    <p class="fig__title">{{ title }}</p>
+    {% if sub %}<p class="fig__sub">{{ sub }}</p>{% endif %}
+  </figcaption>
+  <div class="fig__body">
+    <div class="legend"></div>
+    <div class="chart"></div>
+    <div class="table-view" hidden></div>
+  </div>
+  {% if note or table %}
+  <div class="fig__foot">
+    {% if note %}<p class="fig__note">{{ note }}</p>{% else %}<span></span>{% endif %}
+    {% if table %}<button class="table-toggle" type="button" aria-expanded="false"><span>Show as table</span></button>{% endif %}
+  </div>
+  {% endif %}
+</figure>
+{%- endmacro %}
+
+{% macro chapter_head(num, title) -%}
+<span class="chapter__num">{{ num }}</span>
+<h2>{{ title }}</h2>
+{%- endmacro %}
+
+{% macro key(outcome) -%}<span class="key" style="background: var(--o-{{ outcome }})" aria-hidden="true"></span>{%- endmacro %}

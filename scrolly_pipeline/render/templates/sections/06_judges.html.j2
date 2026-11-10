@@ -1,0 +1,27 @@
+{% from "macros.html.j2" import figure, chapter_head %}
+<section class="chapter" id="judges" aria-labelledby="h-judges">
+  <div class="prose">
+    {{ chapter_head("6 · Measurement", "Two judges, two stories") }}
+    <p id="h-judges">
+      So far, “harmful” has meant “{{ exp.judge }} says unsafe.” The original paper, and much of the work that followed, also uses a cruder judge.
+      An answer counts as a successful attack if it contains none of a list of refusal phrases such as “I cannot” or “I’m sorry.”
+    </p>
+    <p>
+      On the ablated model the two judges disagree sharply. The keyword judge says <strong>{{ f.judge_substring.rate|pct }}</strong> of attacks succeeded;
+      {{ exp.judge }} says <strong>{{ f.judge_guard.rate|pct }}</strong>.
+      The gap is widest for {{ f.judge_max_gap.label|lower }} ({{ f.judge_max_gap.substring.rate|pct }} against {{ f.judge_max_gap.guard.rate|pct }}).
+      A missing refusal phrase shows that the model went along with the request, not that what it said was harmful:
+      {{ f.judge_safe_counted }} ablated answers contain no refusal phrase and were still judged safe.
+    </p>
+  </div>
+  <div class="wide">
+    {{ figure("judges", "Ablated answers counted as a successful attack, by judge",
+              sub="Hollow: the keyword judge (no refusal phrase found). Filled: " ~ exp.judge ~ " (judged unsafe). Sorted by the gap.",
+              note="Keyword judge: the experiment’s substring matching against a fixed list of refusal phrases. It also counts " ~ f.judge_refusal_counted ~ " answers that " ~ exp.judge ~ " flagged as refusals as successes.") }}
+  </div>
+  <div class="prose">
+    <p>
+      Neither judge is ground truth. But a headline attack-success rate depends heavily on which one you pick, here by more than {{ ((f.judge_substring.rate - f.judge_guard.rate) * 100)|round|int }} percentage points.
+    </p>
+  </div>
+</section>
