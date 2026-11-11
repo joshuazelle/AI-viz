@@ -1,11 +1,11 @@
-"""Serve a local preview and an optional private score file without copying it."""
+"""Serve the anonymous public page locally."""
 
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit
 
 
-def make_server(page: Path, scores: Path, port: int = 8765) -> ThreadingHTTPServer:
+def make_server(page: Path, port: int = 8765) -> ThreadingHTTPServer:
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self):
             host = self.headers.get("Host", "")
@@ -16,8 +16,6 @@ def make_server(page: Path, scores: Path, port: int = 8765) -> ThreadingHTTPServ
             route = urlsplit(self.path).path
             if route in ("/", "/index.html"):
                 target, content_type = page, "text/html; charset=utf-8"
-            elif route == "/qwen3guard_refusals.jsonl":
-                target, content_type = scores, "application/x-ndjson; charset=utf-8"
             else:
                 self.send_error(404)
                 return
@@ -40,12 +38,12 @@ def make_server(page: Path, scores: Path, port: int = 8765) -> ThreadingHTTPServ
     return ThreadingHTTPServer(("127.0.0.1", port), Handler)
 
 
-def serve(page: Path, scores: Path, port: int) -> None:
+def serve(page: Path, port: int) -> None:
     if not page.is_file():
         raise FileNotFoundError("Build the essay first: python -m scrolly_pipeline build")
-    with make_server(page, scores, port) as server:
+    with make_server(page, port) as server:
         print(f"Local preview: http://127.0.0.1:{server.server_port}/", flush=True)
-        print("Private text is available only while this local server runs. Ctrl+C stops it.", flush=True)
+        print("Anonymous public preview. Ctrl+C stops it.", flush=True)
         try:
             server.serve_forever()
         except KeyboardInterrupt:

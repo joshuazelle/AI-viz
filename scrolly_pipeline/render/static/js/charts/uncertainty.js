@@ -34,18 +34,6 @@
     if(r.generatedLabel!=='No')return 'unknown';
     return {safe:'safe',controversial:'borderline'}[r.safety]||'unknown';
   }
-  function parseText(text,filename){
-    const raw=text.trim();if(!raw)throw Error('The selected file is empty.');
-    if(/\.csv$/i.test(filename))return {rows:d3.csvParse(text),issues:0};
-    if(raw.startsWith('[')){const a=JSON.parse(raw);if(!Array.isArray(a))throw Error('Expected an array.');return {rows:a,issues:0};}
-    if(!raw.startsWith('{'))return {rows:d3.csvParse(text),issues:0};
-    const rows=[];let issues=0;
-    for(const [i,line] of text.split(/\r?\n/).entries()){
-      if(!line.trim())continue;
-      try{rows.push(JSON.parse(line));}catch(err){issues++;console.warn('Skipped invalid JSONL line',i+1);}
-    }
-    return {rows,issues};
-  }
   function normalize(raw){
     const map=new Map();let invalid=0,duplicates=0;
     for(const r of raw){
@@ -99,7 +87,7 @@
     if(!pairMatchesOutcome(pair))return false;
     const transition=$('pl-transition').value;
     if(transition!=='all'&&`${pair.baseline.outcome}|${pair.ablation.outcome}`!==transition)return false;
-    if(q&&!pair.id.toLowerCase().includes(q)&&!(pair.baseline.prompt||pair.ablation.prompt||'').toLowerCase().includes(q))return false;
+    if(q&&!pair.id.toLowerCase().includes(q))return false;
     if(focus==='uncertain'&&!near(pair.b)&&!near(pair.a))return false;
     if(focus==='decrease'&&!(pair.delta<-.25))return false;
     if(focus==='increase'&&!(pair.delta>.10))return false;
@@ -113,7 +101,7 @@
     return state.records.filter(r=>r.valid && (cat==='all'||r.category===cat)
       && (variant==='all'||r.variant===variant)
       && (wanted==='all'||r.outcome===wanted)
-      && (!q||r.id.toLowerCase().includes(q)||(r.prompt||'').toLowerCase().includes(q)));
+      && (!q||r.id.toLowerCase().includes(q)));
   }
   function selectId(id){state.selectedId=id;renderScatter();renderHistogram();renderInspector();renderKpis();}
   function renderKpis(){
@@ -195,7 +183,7 @@
       .attr('transform',d=>`translate(${d.x},${d.y})`)
       .attr('tabindex',0).attr('role','button')
       .attr('aria-label',d=>`${d.id}; baseline ${pct(d.b)}, ${outcomeName(d.baseline.outcome)}; ablation ${pct(d.a)}, ${outcomeName(d.ablation.outcome)}`)
-      .on('mousemove',(ev,d)=>tooltip(ev,`${d.id} · ${d.category}\nBaseline: ${pct(d.b)} · ${outcomeName(d.baseline.outcome)}\nAblation: ${pct(d.a)} · ${outcomeName(d.ablation.outcome)}\nChange: ${pp(d.delta)}\n${brief(d.baseline.prompt,125)}\nClick to inspect`))
+      .on('mousemove',(ev,d)=>tooltip(ev,`${d.id} · ${d.category}\nBaseline: ${pct(d.b)} · ${outcomeName(d.baseline.outcome)}\nAblation: ${pct(d.a)} · ${outcomeName(d.ablation.outcome)}\nChange: ${pp(d.delta)}\nClick to inspect`))
       .on('mouseout',hideTip)
       .on('click',(ev,d)=>selectId(d.id))
       .on('keydown',(ev,d)=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();selectId(d.id);}});
@@ -309,13 +297,11 @@
   function renderInspector(){
     const id=state.selectedId;$('pl-current-id').textContent=id||'No response selected';
     const group=state.records.filter(r=>r.id===id),base=group.find(r=>r.variant==='baseline'),abl=group.find(r=>r.variant==='ablation');
-    $('pl-prompt').textContent=base?.prompt||abl?.prompt||'The local score file is needed to inspect responses.';
     for(const [tag,r] of [['base',base],['abl',abl]]){
-      $('pl-text-'+tag).textContent=r?.response||'Not yet present in this partial file.';
       $('pl-score-'+tag).textContent=r?.valid?pct(r.p):'—';
       $('pl-bar-'+tag).style.width=r?.valid?(r.p*100)+'%':'0%';
       const badge=$('pl-outcome-'+tag);badge.textContent=r?outcomeName(r.outcome):'Not available';badge.style.background=r?color(r.outcome):'var(--surface-2)';
-      const summary=r?`Generated refusal: ${r.generatedLabel||'unknown'} · Probability-based refusal: ${r.valid?scoreLabel(r.p):'unknown'}${r.valid&&r.p===.5?' (50% tie → No refusal)':''} · Safety: ${r.safety||'unknown'} · ${r.score_method||'method unknown'}`:'Pending';
+      const summary=r?`Generated refusal: ${r.generatedLabel||'unknown'} · Probability-based refusal: ${r.valid?scoreLabel(r.p):'unknown'}${r.valid&&r.p===.5?' (50% tie → No refusal)':''} · Safety: ${r.safety||'unknown'}`:'Pending';
       const mismatch=r?.valid&&r.generatedLabel&&r.generatedLabel!==scoreLabel(r.p);
       $('pl-judge-'+tag).textContent=summary+(mismatch?' · LABEL / SCORE MISMATCH':'');
       $('pl-judge-'+tag).classList.toggle('pl-warning',!!mismatch);
@@ -335,19 +321,5 @@
   });
   drawLegend('pl-outcome-legend',[...OUTCOMES,'unknown']);
   drawLegend('pl-hist-legend',[...OUTCOMES,'unknown']);
-  render();
-  const missing = 'To view these plots and responses, place qwen3guard_refusals.jsonl in responses/ and run: uv run --group viz python -m scrolly_pipeline preview. Then open the local preview URL.';
-  async function loadLocalScores(){
-    if(location.protocol==='file:'){setStatus(missing);return;}
-    setStatus('Loading local scores…');
-    try{
-      const response=await fetch('qwen3guard_refusals.jsonl',{cache:'no-store',credentials:'omit'});
-      if(!response.ok){setStatus(missing);return;}
-      const {rows,issues}=parseText(await response.text(),'qwen3guard_refusals.jsonl');
-      if(!rows.length)throw Error('No records');
-      updateRows(rows,'qwen3guard_refusals.jsonl',issues);
-      if(!state.records.some(record=>record.valid))setStatus('The local file contains no valid scored responses. Check the JSONL export and reload.',true);
-    }catch(error){setStatus('Unable to read the local score file. Check the JSONL export and reload. '+missing,true);}
-  }
-  loadLocalScores();
+  updateRows(JSON.parse(document.getElementById('viz-data').textContent).uncertainty,'anonymous scores',0);
 })();

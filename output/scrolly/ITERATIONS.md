@@ -75,24 +75,19 @@ Critique from the screenshots:
   answers, the rest folded into "other". Panels made taller so 3–4% boxes get labels. A `BLOCKLIST`
   in `textfeatures/masking.py` can still hide specific words (currently empty).
 
-## v07: optional local refusal uncertainty explorer (review build)
+## v07: anonymous refusal uncertainty explorer
 
 - Adds the finalized explorer after the judges chapter, preserving original
-  chapters, numbering, styling, and embedded aggregate data.
-- Baseline-ring/ablated-fill paired dots, linked histograms, filters, overlapping
-  point selection, and the prompt/response inspector are retained. Exactly 0.5
-  is No refusal; the uncertainty interval includes 0.35 and 0.65.
-- No file picker or score data in the generated HTML. The browser requests the
-  separate `qwen3guard_refusals.jsonl`. If unavailable, the explorer stays empty
-  with a message. The original essay remains usable.
-- `python -m scrolly_pipeline preview` serves the latest build and the optional
-  score file from Git-ignored `responses/`, on 127.0.0.1 only. It copies no raw data
-  into output, serves only these two resources, and disables response caching.
-  Optional `--page`, `--scores`, and `--port` select local preview inputs.
-- The normal build still requires only the original evaluation files. The
-  unchanged eight-word leak check passes on all 3,000 original texts, and the
-  public embedded data matches v06 exactly. Pages remains pinned to v06.
-- Browser QA passed for missing files, file:// opening, automatic local loading,
-  threshold boundaries, linked selection, filters, safe text rendering, and
-  responsive layout. The real local export loads 2,000 scores / 1,000 pairs
-  without page errors or external requests. QA screenshots use synthetic text.
+  chapters, numbering, styling, and aggregate data.
+- Baseline-ring/ablated-fill paired dots, linked histograms, filters, and score
+  inspection. Exactly 0.5 is No refusal; uncertainty includes 0.35 and 0.65.
+- Build reads the private `responses/qwen3guard_refusals.jsonl` and exports only
+  anonymous pair labels, numeric probabilities, categories, and judge outcomes.
+  No original IDs, prompts, responses, file picker, or runtime data requests.
+- Build validates complete pairs and runs the unchanged eight-word leak check
+  against both original evaluation texts and the private score-file texts.
+- Preview serves only the generated public HTML on loopback; `--page` and
+  `--port` select the page and port. Pages deployment targets v07.
+- Data tests and browser QA passed: 2,000 scores / 1,000 pairs, threshold
+  boundaries, linked selection, filters, desktop/mobile light/dark layout,
+  zero page errors and zero network requests. QA fixtures contain synthetic data.
