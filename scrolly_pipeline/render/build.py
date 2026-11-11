@@ -16,7 +16,7 @@ D3_VERSION = "7.9.0"
 D3_URL = f"https://cdn.jsdelivr.net/npm/d3@{D3_VERSION}/dist/d3.min.js"
 D3_PATH = STATIC_DIR / "vendor" / f"d3-{D3_VERSION}.min.js"
 
-CSS_FILES = ["tokens.css", "base.css", "scrolly.css", "charts.css"]
+CSS_FILES = ["tokens.css", "base.css", "scrolly.css", "charts.css", "uncertainty.css"]
 # Order matters: core helpers first, then chart modules, then the boot script.
 JS_FILES = [
     "core/util.js",
@@ -35,6 +35,7 @@ JS_FILES = [
     "charts/lengths.js",
     "charts/stacked.js",
     "main.js",
+    "charts/uncertainty.js",
 ]
 
 DESCRIPTION = (

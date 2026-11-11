@@ -74,3 +74,24 @@ Critique from the screenshots:
   shown, and detail is limited by frequency instead: at most eight boxes per branch, each at least 2% of
   answers, the rest folded into "other". Panels made taller so 3–4% boxes get labels. A `BLOCKLIST`
   in `textfeatures/masking.py` can still hide specific words (currently empty).
+
+## v07: anonymous refusal uncertainty explorer
+
+- Adds the finalized explorer after the judges chapter, preserving original
+  chapters, numbering, styling, and aggregate data.
+- Baseline-ring/ablated-fill paired dots, linked histograms, filters, and score
+  inspection. Exactly 0.5 is No refusal; uncertainty includes 0.35 and 0.65.
+- Build reads the private `responses/qwen3guard_refusals.jsonl` and exports only
+  anonymous pair labels, numeric probabilities, categories, and judge outcomes.
+  No original IDs, prompts, responses, file picker, or runtime data requests.
+- Build validates complete pairs and runs the unchanged eight-word leak check
+  against both original evaluation texts and the private score-file texts.
+- Preview serves only the generated public HTML on loopback; `--page` and
+  `--port` select the page and port. Pages deployment targets v07.
+- Data tests and browser QA passed: 2,000 scores / 1,000 pairs, threshold
+  boundaries, linked selection, filters, desktop/mobile light/dark layout,
+  zero page errors and zero network requests. QA fixtures contain synthetic data.
+
+## v10: clarify refusal probability
+
+- Clarify how refusal probability and response outcome should be interpreted.

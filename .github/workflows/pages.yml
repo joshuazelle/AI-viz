@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  SITE_DIR: output/scrolly/v06
+  SITE_DIR: output/scrolly/v10
 
 jobs:
   deploy:
