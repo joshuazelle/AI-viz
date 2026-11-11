@@ -70,3 +70,7 @@ Critique from the screenshots:
 
 - The model is Qwen3.5-4B, not Qwen3-4B: corrected in the page copy, the meta description and the methods
   section (the judge, Qwen3Guard, is unchanged). Same QA as v05, all checks pass.
+- "How answers begin" no longer masks words outside a function-word whitelist as ‹word›. Real words are
+  shown, and detail is limited by frequency instead: at most eight boxes per branch, each at least 2% of
+  answers, the rest folded into "other". Panels made taller so 3–4% boxes get labels. A `BLOCKLIST`
+  in `textfeatures/masking.py` can still hide specific words (currently empty).

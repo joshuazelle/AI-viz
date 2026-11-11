@@ -1,5 +1,5 @@
 /* Icicle of the first three (masked) words of every response, before vs after ablation.
-   Words outside a function-word whitelist arrive already replaced by "*" from the pipeline. */
+   Blocklisted words arrive replaced by "*" from the pipeline. */
 (function (V) {
   const U = V.util;
   const DISPLAY = { "*": "‹word›", "**": "** (bold)", "#": "# (heading)", "1.": "1. (list)", "(other)": "other" };
@@ -46,7 +46,7 @@
       const narrow = w < 700;
       const gap = 28;
       const panelW = narrow ? w : (w - gap) / 2;
-      const panelH = narrow ? 300 : 400;
+      const panelH = narrow ? 420 : 540;
       const head = 40;
       const h = narrow ? 2 * (panelH + head) + gap : panelH + head;
       const svg = U.svg(mount, w, h, "Icicle charts of the first three words of each response, before and after ablation.");
@@ -71,10 +71,11 @@
           .attr("rx", 3)
           .style("fill", (d) => (d.label === "(other)" ? U.css("--surface-2") : U.css(`--o-${majority(d)}`)))
           .style("fill-opacity", (d) => (d.label === "(other)" ? 1 : 0.24));
-        const fits = (d) => y(d.share) - y(0) >= 17;
+        const boxH = (d) => y(d.share) - y(0);
+        const fits = (d) => boxH(d) >= 13;
         const t = cell.filter(fits).append("text")
-          .attr("x", 8).attr("y", (d) => Math.min(16, (y(d.share) - y(0)) / 2 + 4))
-          .style("font-size", narrow ? "11px" : "12px");
+          .attr("x", 8).attr("y", (d) => Math.min(16, boxH(d) / 2 + 4))
+          .style("font-size", (d) => (narrow || boxH(d) < 17 ? "11px" : "12px"));
         t.append("tspan")
           .style("fill", (d) => (d.label === "*" || d.label === "(other)" ? U.css("--muted") : U.css("--ink")))
           .style("font-weight", (d) => (d.label === "*" || d.label === "(other)" ? 400 : 600))
@@ -105,7 +106,7 @@
     return {
       render,
       table: () => ({
-        caption: "Most common openings (first three tokens, content words masked).",
+        caption: "Most common openings (first three tokens, rare openings folded into other).",
         columns: ["Opening", "Before", "After ablation"],
         rows: (() => {
           const leaves = {};

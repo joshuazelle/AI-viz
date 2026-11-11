@@ -1,4 +1,4 @@
-"""Prefix tree of masked response openings ("word tree" / icicle data)."""
+"""Prefix tree of response openings ("word tree" / icicle data)."""
 
 from collections import Counter
 
@@ -33,7 +33,7 @@ def _finalise(node: dict, total: int, min_share: float, max_children: int) -> di
     }
 
 
-def opening_tree(responses, outcomes, depth: int = 3, min_share: float = 0.02, max_children: int = 5) -> dict:
+def opening_tree(responses, outcomes, depth: int = 3, min_share: float = 0.02, max_children: int = 8) -> dict:
     """Count shared openings; branches under ``min_share`` of all responses fold into (other)."""
     root = _node("")
     for text, outcome in zip(responses, outcomes):

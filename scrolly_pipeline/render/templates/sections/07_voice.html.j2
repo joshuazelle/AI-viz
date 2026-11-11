@@ -5,13 +5,13 @@
     <p id="h-voice">
       Removing one direction changes more than the verdict. Before ablation, {{ f.opening_base.share|pct }} of all answers open with the same three words:
       <q>{{ f.opening_base.phrase|capitalize }} …</q>
-      After ablation, the most common fully legible opening, <q>{{ f.opening_abl.phrase|capitalize }} …</q>, covers just {{ f.opening_abl.share|pct }}.
+      After ablation, the most common opening, <q>{{ f.opening_abl.phrase|capitalize }} …</q>, covers just {{ f.opening_abl.share|pct }}.
     </p>
   </div>
   <div class="wide">
     {{ figure("openings", "How answers begin",
               sub="First three words of every answer, before and after. Box height is the share of answers that start that way.",
-              note="To keep model text off this page, every word outside a fixed list of about 150 function words (“I”, “here”, “cannot”, “the”…) is replaced by ‹word› before counting. Branches under 2% fold into “other”.") }}
+              note="Only frequent openings are spelled out: branches under 2% of answers, and beyond the eight largest per box, fold into “other”, so rare words that could carry specific content never appear.") }}
   </div>
   <div class="prose">
     <p>
