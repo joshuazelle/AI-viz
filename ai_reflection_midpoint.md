@@ -1,6 +1,6 @@
 # Phase 1 reflections on AI use
 
-Gen AI Team Phase 1 was Joe Dorfman (k12446281) and Joshua Zelle (11922754)
+Gen AI Team Phase 1 was Joseph Dorfman (k12446281) and Joshua Zelle (11922754)
 
 Proud note: this report was written with 0% AI assistance
 
