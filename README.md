@@ -58,7 +58,7 @@ uv sync --extra mac    # Mac, includes mlx-lm
 ## Scrollytelling page
 A visual essay on the baseline vs. ablated Qwen3.5-4B responses, built by `scrolly_pipeline/` into a single self-contained HTML file. It shows aggregates, stylized examples, and anonymous per-pair uncertainty scores, and a build-time leak check fails if the page shares any 8-word run with a prompt or model answer.
 
-Final version: `output/scrolly/v07/index.html`, live at https://joshuazelle.github.io/AI-viz/ (deployed by `.github/workflows/pages.yml`; iteration notes in `output/scrolly/ITERATIONS.md`).
+Final version: `output/scrolly/v10/index.html`, live at https://joshuazelle.github.io/AI-viz/ (deployed by `.github/workflows/pages.yml`; iteration notes in `output/scrolly/ITERATIONS.md`).
 
 To rebuild, extract `responses.7z` into `responses/` and obtain `qwen3guard_refusals.jsonl` separately from your teammate. Place it in the same Git-ignored folder:
 ```

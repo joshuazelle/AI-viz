@@ -3,7 +3,7 @@
     <span class="chapter__num">Explore · Uncertainty</span>
     <h2 id="h-probability-lab">Between yes and no</h2>
     <p>Binary labels conceal how decisively Qwen3Guard chooses refusal. This explorer compares its conditional Yes-versus-No label probabilities before and after ablation, alongside four response outcomes: <strong>refusal, safe answer, borderline, and harmful</strong>.</p>
-    <p>These are two different measurements: <strong>refusal probability</strong> concerns whether a response declines the request, while <strong>outcome</strong> combines Qwen3Guard's freshly generated refusal and safety judgments. A score near 50% marks classification ambiguity, not an estimated error rate. The original essay's aggregate figures are preserved from its earlier evaluation.</p>
+    <p>The <strong>refusal probability</strong> shows how strongly Qwen3Guard favors <strong>Yes</strong> over <strong>No</strong> when deciding whether a response is a refusal. A score near 50% means the judge is nearly equally split between these labels, not that it has a 50% chance of being wrong. The <strong>response outcome</strong> provides a broader classification—refusal, safe answer, borderline, or harmful—by combining Qwen3Guard's refusal and safety judgments.</p>
   </div>
   <div class="wide pl-app">
     <div class="pl-card">

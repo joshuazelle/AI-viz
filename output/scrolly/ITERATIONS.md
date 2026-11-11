@@ -91,3 +91,7 @@ Critique from the screenshots:
 - Data tests and browser QA passed: 2,000 scores / 1,000 pairs, threshold
   boundaries, linked selection, filters, desktop/mobile light/dark layout,
   zero page errors and zero network requests. QA fixtures contain synthetic data.
+
+## v10: clarify refusal probability
+
+- Clarify how refusal probability and response outcome should be interpreted.
