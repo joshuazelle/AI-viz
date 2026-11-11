@@ -66,3 +66,42 @@ uv sync --group viz            # add --extra mac on Mac
 uv run --group viz python -m scrolly_pipeline build
 ```
 Each build goes to the next `output/scrolly/vNN/`, with screenshots and QA reports in `vNN/shots/` (not committed).
+
+### Local uncertainty explorer
+
+The review build `output/scrolly/v07/index.html` adds **Between yes and no** after
+**Two judges, two stories**. Original chapters and numbering are preserved.
+GitHub Pages remains pinned to v06; this change does not deploy v07.
+
+Optionally open `qwen3guard_fresh_refusal.jsonl` in the explorer. Files are read in
+browser memory only, with no upload or persistence. Without a file the original
+essay works, and the explorer shows an empty state. Never commit raw responses.
+
+The scatterplot uses baseline probability on X and ablated probability on Y. The
+outer ring represents baseline outcome; the inner fill represents ablated outcome.
+Selection links both histogram markers and the inspector. Histogram bins filter
+the uncertainty table. Filters and overlapping-point inspection are preserved.
+
+Refusal uses `p_refusal_yes > 0.5`; exactly 0.5 is No refusal. Outcome colors use
+fresh generated labels: Unsafe takes precedence, then Refusal Yes, then Safe or
+Controversial. Conditional label probability does not measure accuracy.
+
+JSONL, JSON arrays, and CSV are supported, including partial checkpoints. Fields:
+`id`, `variant` (baseline, ablation, or ablated), `p_refusal_yes` in [0, 1], and
+optional `status` (absent or ok for valid scores). Outcome labels come from
+`refusal_label_generated` / `qwen3guard_refusal` and `safety` / `qwen3guard_safety`.
+Optional metadata: `category`, `prompt`, `response`, `score_method`. Complete
+scored pairs enter the scatterplot; singles remain in the distributions and table.
+Duplicate ID/variant records use the last entry. Invalid JSONL lines are reported.
+
+The regular build runs synthetic explorer QA unless `--no-shots` is specified.
+To also check a completed local export (2,000 scored records, 1,000 pairs):
+
+```sh
+uv run --group viz python -m scrolly_pipeline.qa.uncertainty output/scrolly/v07/index.html --scores /path/to/qwen3guard_fresh_refusal.jsonl
+```
+
+Omit `--scores` for synthetic checks only. QA checks boundary probabilities, glyph
+colors, linked selection, filters, malformed records, escaping, mobile layout, and
+absence of network requests or persistence. Screenshots use synthetic text only.
+The existing eight-word build-time leak check remains unchanged.

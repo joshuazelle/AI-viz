@@ -74,3 +74,22 @@ Critique from the screenshots:
   shown, and detail is limited by frequency instead: at most eight boxes per branch, each at least 2% of
   answers, the rest folded into "other". Panels made taller so 3–4% boxes get labels. A `BLOCKLIST`
   in `textfeatures/masking.py` can still hide specific words (currently empty).
+
+## v07: local refusal uncertainty explorer (review build)
+
+- Integrated the finalized explorer into the renderer after the judges chapter,
+  with baseline-ring/ablated-fill glyphs, linked histogram markers, bin selection,
+  filters, keyboard selection, and local response inspection. Original chapter
+  templates, numbering, and embedded aggregate data remain unchanged from v06.
+- Scores and response text are loaded only from a local file in browser memory.
+  No score dataset or raw text is embedded. Pages deployment remains pinned to v06.
+- Exactly 0.5 is No refusal; the uncertainty interval includes both 0.35 and 0.65.
+  Reject boolean/blank/out-of-range scores and skip malformed non-object records.
+- Unchanged eight-word leak check passed on all 3,000 original prompts and answers.
+  Existing QA passed at desktop/mobile in light/dark: no errors or overflow, all
+  figures, tooltips, table views, and theme controls work.
+- Explorer QA passed with synthetic edge cases and the local 2,000-score export
+  (1,000 pairs), including safe text rendering, linked views, mobile layout, no
+  network requests, and no persistence. The resize check waits for the existing
+  chart resize debounce before assessing page width. QA screenshots contain only
+  synthetic explorer text; raw data is not committed.

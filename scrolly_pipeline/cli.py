@@ -63,6 +63,10 @@ def build(args) -> int:
         empty_tables = [k for k, v in inter["tables"].items() if not v]
         print(f"interactions: tooltips missing {missing}, waffle hover {'ok' if inter['waffle_hover'] != 'NOT SHOWN' else 'MISSING'}, "
               f"empty tables {empty_tables}, theme toggle -> {inter['theme']['data-theme']}")
+        from .qa.uncertainty import check as check_uncertainty
+
+        uncertainty = check_uncertainty(page, out / "shots")
+        print(f"uncertainty explorer: {uncertainty['synthetic_checks']}")
     return 0
 
 
