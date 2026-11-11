@@ -10,13 +10,15 @@ We first each did some research, also assisted with AI to come up with topic ide
 
 We then went looking for datasets and found these refusal benchmarks (also through AI help) and then generated a semi synthetic dataset of 1000 prompts. Semi synthetic because the prompts are taken from existing benchmarks but just we put it in this new collection that has 100 prompts for each harm category. We also have a column of the prompts source in our spreadsheet. For obvious reasons we do not upload that dataset here, especially with the responses. On request we can share it via a safe channel with the instructors.
 
-We then downloaded huggingface qwen3 4b model to our device to run the prompts locally. For the abliterated model we used the authors original github repo to abliterate the exact same model ourselves. For this process we used AI. 
+We then downloaded huggingface Qwen3.5-4B model to our device to run the prompts locally. For the abliterated model we used the authors original github repo to abliterate the exact same model ourselves. For this process we used AI. 
 
-After we obtained the responses we proceeded to do extensive manual inspection: comparing the abliterated vs. base model responses, gauged the level of harm, differences between safe completions and refusals, different level of harmfulness, from cautious discussion to actual step by step guides.
+After we obtained the responses we proceeded to do extensive manual inspection: comparing the abliterated vs. base model responses, gauged the level of harm, differences between safe completions and refusals, different level of harmfulness, from cautious discussion to actual step by step guides. For refusal evaluation and classification, we leveraged an LLM-as-a-Judge approach using Qwen3Guard-Gen-4B. 
+
+We also explored using one of the newer, open-source 'Type-1/Decision Models' in tandem with our AI partner but found the Qwen3Guard outputs to be more consistent, likely due to its specific fine-tuning for this and similar purposes. The AI was incredibly helpful in this comparison as we processed the outputs from Qwen3Guard and compared them to the decision model through multiple iterations. It would create one-shot Streamlit dashboards to highlight and priortize review, something that used to take hours without the AI help. We even used the AI to align on and implement our final approach of extending the binary refuse/not-refuse to generate token probabilites as a surrogate 'score' in exploration of a 'degree' of refusal.
 
 Afterwards we knew that quite an elaborate visualization might be possible with this rich dataset but were not sure which one as we dont have much vizualization experience. For this we then asked AI to give us some options. After rewiewing those we settled for the scrolly telling one. 
 
-Then we prompted AI to code us the scrolly artifact and iterate over it by itself a few times. The prompt can be found in the ai-interactions folder. After 5 iterations we were quite impressed with what it came up with in 30 minutes (Claude Opus 5.5 extra high) and proceeded to review the artifact. 
+Then we prompted AI to code us the scrolly artifact and iterate over it by itself a few times. The prompt can be found in the ai-interactions folder. After 5 iterations we were quite impressed with what it came up with in 30 minutes (Claude Opus 5.5 extra high) and proceeded to review the artifact. We decided to do some more exploration with the AI to add a couple more plots as well. 
 
 ## Our reflections
 
@@ -24,7 +26,9 @@ We were quite impressed with the visualization that AI could come up with. It wa
 
 We note however that the processes before were crucial to arrive at the final prompt: the 2 group meetings we had, studying the paper together in depth, inspecting the responses manually to get a feel first, thinking about degrees of harmfulness, categorizing prompts etc.
 
-In conclusion, it was a pleasant experience to have this powerful AI assistance to do the actual visualization. We can also see how this would be a slippery slope to just skip the preliminary work and just prompt Claude cold with the whole project and go directly from assignment description to artifact without human intervention. 
+One interesting area of interaction with the AI to highlight was around exploration of using these new 'decision-type' models such as Jev for response classficiation. The AI was particularly helpful in getting that up and running as well as designing a comprehensive taxonomy to try. It even leveraged previous papers from it's memory that we had reviewed together and read the terms of service for Jev to guide us towards using an open-source verison due to the content of our LLM outputs. One drawback was the original taxonomy was overly complex and required multiple iterations to ultimately end going with another approach. However, this work was still worthwhile as we learned how to use these models for future work and learned more about Qwen3Guard model. 
+
+In conclusion, it was a pleasant experience to have this powerful AI assistance to do the actual visualization and exploration. We can also see how this would be a slippery slope to just skip the preliminary work and just prompt Claude cold with the whole project and go directly from assignment description to artifact without human intervention. 
 
 Two problems we see with that: Firstly, this would defeat the whole educational purpose of this project. That is because in the preliminary work of understanding the problem, the method, the data, the responses, thinking about degrees of harmfulness, prompt categories etc. is where most of the learning happens. 
 
