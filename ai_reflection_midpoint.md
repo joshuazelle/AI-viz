@@ -18,7 +18,7 @@ We also explored using one of the newer, open-source 'Type-1/Decision Models' in
 
 Afterwards we knew that quite an elaborate visualization might be possible with this rich dataset but were not sure which one as we dont have much vizualization experience. For this we then asked AI to give us some options. After rewiewing those we settled for the scrolly telling one. 
 
-Then we prompted AI to code us the scrolly artifact and iterate over it by itself a few times. The prompt can be found in the ai-interactions folder. After 5 iterations we were quite impressed with what it came up with in 30 minutes (Claude Opus 5.5 extra high) and proceeded to review the artifact. We decided to do some more exploration with the AI to add a couple more plots as well. 
+Then we prompted AI to code us the scrolly artifact and iterate over it by itself a few times. The prompt can be found in the ai-interactions folder. After 5 iterations we were quite impressed with what it came up with in 30 minutes (Claude Opus 5.5 extra high) and proceeded to review the artifact. We decided to do some more exploration with ChatGPT to add a couple more plots and expand the variety of feedback/viewpoints by including a model from a different company. 
 
 ## Our reflections
 
