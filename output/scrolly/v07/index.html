@@ -862,17 +862,12 @@ none of the high-risk advice requests are.</p>
   <div class="prose">
     <span class="chapter__num">Explore · Uncertainty</span>
     <h2 id="h-probability-lab">Between yes and no</h2>
-    <p>Binary labels conceal how decisively Qwen3Guard chooses refusal. This explorer compares its conditional Yes-versus-No label probabilities before and after ablation, alongside four response outcomes: <strong>refusal, safe answer, borderline, and harmful</strong>.</p>
+    <p>Binary labels conceal how decisively Qwen3Guard chooses refusal. This local extension compares its conditional Yes-versus-No label probabilities before and after ablation, alongside four response outcomes: <strong>refusal, safe answer, borderline, and harmful</strong>.</p>
     <p>These are two different measurements: <strong>refusal probability</strong> concerns whether a response declines the request, while <strong>outcome</strong> combines Qwen3Guard's freshly generated refusal and safety judgments. A score near 50% marks classification ambiguity, not an estimated error rate. The original essay's aggregate figures are preserved from its earlier evaluation.</p>
   </div>
   <div class="wide pl-app">
     <div class="pl-card">
-      <div class="pl-toolbar">
-        <label style="flex:1;min-width:260px">Load Qwen3Guard checkpoint or completed export
-          <input id="pl-upload" type="file" accept=".jsonl,.csv,.json,application/json,text/plain,text/csv">
-        </label>
-      </div>
-      <div id="pl-status" class="pl-status" role="status">Optionally choose <code>qwen3guard_fresh_refusal.jsonl</code> to explore your results. Files stay in this browser tab; nothing is uploaded or saved. Partial files are supported.</div>
+      <div id="pl-status" class="pl-status" role="status">Local score file required: qwen3guard_refusals.jsonl. See the README for the local preview command.</div>
       <div id="pl-kpis" class="pl-kpis"></div>
       <p class="pl-muted">Only complete, successfully scored pairs enter the paired plot. A score of exactly 50% is categorized as <strong>No refusal</strong> (tie policy). The distribution and uncertainty table include single scored responses. A refusal probability is not a calibrated accuracy estimate.</p>
     </div>
@@ -973,7 +968,7 @@ none of the high-risk advice requests are.</p>
         </div>
       </div>
     </div>
-    <p class="pl-muted">Outcome mapping for this new evaluation follows the original essay: <strong>Harmful</strong> when fresh <code>Safety: Unsafe</code>, even if <code>Refusal: Yes</code>; otherwise <strong>Refusal</strong> when <code>Refusal: Yes</code>; otherwise <strong>Safe answer</strong> or <strong>Borderline</strong> when <code>Safety</code> is Safe or Controversial. Scores and full text are read only from your local file; no responses are embedded in the HTML.</p>
+    <p class="pl-muted">Outcome mapping for this new evaluation follows the original essay: <strong>Harmful</strong> when fresh <code>Safety: Unsafe</code>, even if <code>Refusal: Yes</code>; otherwise <strong>Refusal</strong> when <code>Refusal: Yes</code>; otherwise <strong>Safe answer</strong> or <strong>Borderline</strong> when <code>Safety</code> is Safe or Controversial. Scores and text are loaded separately from the local JSONL, never embedded in the HTML. Without that file, this explorer stays empty.</p>
   </div>
   <div id="pl-local-tooltip" class="pl-tooltip" role="tooltip"></div>
 </section><section class="chapter" id="voice" aria-labelledby="h-voice">
@@ -2978,8 +2973,6 @@ window.Viz = window.Viz || { charts: {} };
 })(window.Viz);
 
 /* charts/uncertainty.js */
-/* Vis4AI refusal-uncertainty lab. Qwen3Guard scores and full response text
-   are imported locally, never embedded in the public essay. */
 (function () {
   'use strict';
   const root = document.getElementById('probability-lab');
@@ -2998,7 +2991,7 @@ window.Viz = window.Viz || { charts: {} };
   const outcomeName = x => LABELS[x]||LABELS.unknown;
   const idKey = r => r.id+'\u0000'+r.variant;
   const color = x => COLORS[x]||COLORS.unknown;
-  const near = probability => probability>=.35 && probability<=.65;
+  const near = p => p>=.35 && p<=.65;
   const chance = p => 1-2*Math.abs(p-.5);
   // Explicit tie policy: exactly 50% is NO refusal (not Yes).
   const scoreLabel = p => p > .5 ? 'Yes' : 'No';
@@ -3152,7 +3145,7 @@ window.Viz = window.Viz || { charts: {} };
     $('pl-filter-count').textContent=`${points.length.toLocaleString()} filtered pairs · ${state.pairs.length.toLocaleString()} total complete pairs · ${points.length.toLocaleString()} rendered dots (some overlap)`;
     if(!points.length){
       state.scatterCoords=[];updateNearby();target.className='pl-empty';
-      target.textContent=state.records.length?'No complete pairs match your filters.':'Load a partial JSONL or CSV to begin.';
+      target.textContent=state.records.length?'No complete pairs match your filters.':'The local score file is needed to display this plot.';
       return;
     }
     target.className='';const W=740,H=440,m={left:54,right:16,top:15,bottom:45};
@@ -3291,7 +3284,7 @@ window.Viz = window.Viz || { charts: {} };
   function renderInspector(){
     const id=state.selectedId;$('pl-current-id').textContent=id||'No response selected';
     const group=state.records.filter(r=>r.id===id),base=group.find(r=>r.variant==='baseline'),abl=group.find(r=>r.variant==='ablation');
-    $('pl-prompt').textContent=base?.prompt||abl?.prompt||'Load a result file to inspect responses.';
+    $('pl-prompt').textContent=base?.prompt||abl?.prompt||'The local score file is needed to inspect responses.';
     for(const [tag,r] of [['base',base],['abl',abl]]){
       $('pl-text-'+tag).textContent=r?.response||'Not yet present in this partial file.';
       $('pl-score-'+tag).textContent=r?.valid?pct(r.p):'—';
@@ -3304,11 +3297,6 @@ window.Viz = window.Viz || { charts: {} };
     }
   }
   function render(){renderScatter();renderHistogram();renderInspector();renderKpis();}
-  $('pl-upload').addEventListener('change',async event=>{
-    const f=event.target.files?.[0];if(!f)return;
-    try{const {rows,issues}=parseText(await f.text(),f.name);if(!rows.length)throw Error('No complete records found.');updateRows(rows,f.name,issues);}
-    catch(e){setStatus('Unable to load file: '+e.message,true);console.error(e);}
-  });
   for(const id of ['pl-category','pl-outcome','pl-outcome-side','pl-transition','pl-variant','pl-focus','pl-search']){
     $(id).addEventListener(id==='pl-search'?'input':'change',()=>{renderScatter();renderHistogram();renderKpis();});
   }
@@ -3323,6 +3311,20 @@ window.Viz = window.Viz || { charts: {} };
   drawLegend('pl-outcome-legend',[...OUTCOMES,'unknown']);
   drawLegend('pl-hist-legend',[...OUTCOMES,'unknown']);
   render();
+  const missing = 'To view these plots and responses, place qwen3guard_refusals.jsonl in responses/ and run: uv run --group viz python -m scrolly_pipeline preview. Then open the local preview URL.';
+  async function loadLocalScores(){
+    if(location.protocol==='file:'){setStatus(missing);return;}
+    setStatus('Loading local scores…');
+    try{
+      const response=await fetch('qwen3guard_refusals.jsonl',{cache:'no-store',credentials:'omit'});
+      if(!response.ok){setStatus(missing);return;}
+      const {rows,issues}=parseText(await response.text(),'qwen3guard_refusals.jsonl');
+      if(!rows.length)throw Error('No records');
+      updateRows(rows,'qwen3guard_refusals.jsonl',issues);
+      if(!state.records.some(record=>record.valid))setStatus('The local file contains no valid scored responses. Check the JSONL export and reload.',true);
+    }catch(error){setStatus('Unable to read the local score file. Check the JSONL export and reload. '+missing,true);}
+  }
+  loadLocalScores();
 })();
 
 </script>

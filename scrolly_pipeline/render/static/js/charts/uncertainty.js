@@ -1,5 +1,3 @@
-/* Vis4AI refusal-uncertainty lab. Qwen3Guard scores and full response text
-   are imported locally, never embedded in the public essay. */
 (function () {
   'use strict';
   const root = document.getElementById('probability-lab');
@@ -18,7 +16,7 @@
   const outcomeName = x => LABELS[x]||LABELS.unknown;
   const idKey = r => r.id+'\u0000'+r.variant;
   const color = x => COLORS[x]||COLORS.unknown;
-  const near = probability => probability>=.35 && probability<=.65;
+  const near = p => p>=.35 && p<=.65;
   const chance = p => 1-2*Math.abs(p-.5);
   // Explicit tie policy: exactly 50% is NO refusal (not Yes).
   const scoreLabel = p => p > .5 ? 'Yes' : 'No';
@@ -172,7 +170,7 @@
     $('pl-filter-count').textContent=`${points.length.toLocaleString()} filtered pairs · ${state.pairs.length.toLocaleString()} total complete pairs · ${points.length.toLocaleString()} rendered dots (some overlap)`;
     if(!points.length){
       state.scatterCoords=[];updateNearby();target.className='pl-empty';
-      target.textContent=state.records.length?'No complete pairs match your filters.':'Load a partial JSONL or CSV to begin.';
+      target.textContent=state.records.length?'No complete pairs match your filters.':'The local score file is needed to display this plot.';
       return;
     }
     target.className='';const W=740,H=440,m={left:54,right:16,top:15,bottom:45};
@@ -311,7 +309,7 @@
   function renderInspector(){
     const id=state.selectedId;$('pl-current-id').textContent=id||'No response selected';
     const group=state.records.filter(r=>r.id===id),base=group.find(r=>r.variant==='baseline'),abl=group.find(r=>r.variant==='ablation');
-    $('pl-prompt').textContent=base?.prompt||abl?.prompt||'Load a result file to inspect responses.';
+    $('pl-prompt').textContent=base?.prompt||abl?.prompt||'The local score file is needed to inspect responses.';
     for(const [tag,r] of [['base',base],['abl',abl]]){
       $('pl-text-'+tag).textContent=r?.response||'Not yet present in this partial file.';
       $('pl-score-'+tag).textContent=r?.valid?pct(r.p):'—';
@@ -324,11 +322,6 @@
     }
   }
   function render(){renderScatter();renderHistogram();renderInspector();renderKpis();}
-  $('pl-upload').addEventListener('change',async event=>{
-    const f=event.target.files?.[0];if(!f)return;
-    try{const {rows,issues}=parseText(await f.text(),f.name);if(!rows.length)throw Error('No complete records found.');updateRows(rows,f.name,issues);}
-    catch(e){setStatus('Unable to load file: '+e.message,true);console.error(e);}
-  });
   for(const id of ['pl-category','pl-outcome','pl-outcome-side','pl-transition','pl-variant','pl-focus','pl-search']){
     $(id).addEventListener(id==='pl-search'?'input':'change',()=>{renderScatter();renderHistogram();renderKpis();});
   }
@@ -343,4 +336,18 @@
   drawLegend('pl-outcome-legend',[...OUTCOMES,'unknown']);
   drawLegend('pl-hist-legend',[...OUTCOMES,'unknown']);
   render();
+  const missing = 'To view these plots and responses, place qwen3guard_refusals.jsonl in responses/ and run: uv run --group viz python -m scrolly_pipeline preview. Then open the local preview URL.';
+  async function loadLocalScores(){
+    if(location.protocol==='file:'){setStatus(missing);return;}
+    setStatus('Loading local scores…');
+    try{
+      const response=await fetch('qwen3guard_refusals.jsonl',{cache:'no-store',credentials:'omit'});
+      if(!response.ok){setStatus(missing);return;}
+      const {rows,issues}=parseText(await response.text(),'qwen3guard_refusals.jsonl');
+      if(!rows.length)throw Error('No records');
+      updateRows(rows,'qwen3guard_refusals.jsonl',issues);
+      if(!state.records.some(record=>record.valid))setStatus('The local file contains no valid scored responses. Check the JSONL export and reload.',true);
+    }catch(error){setStatus('Unable to read the local score file. Check the JSONL export and reload. '+missing,true);}
+  }
+  loadLocalScores();
 })();

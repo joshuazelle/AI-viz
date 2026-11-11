@@ -78,7 +78,16 @@ def main(argv=None) -> None:
     b.add_argument("--out", default=str(OUTPUT_DIR))
     b.add_argument("--responses", default=str(RESPONSES_DIR))
     b.add_argument("--no-shots", action="store_true", help="skip the headless-browser screenshots")
+    preview = sub.add_parser("preview", help="serve the latest page with optional local response inspection")
+    preview.add_argument("--page", type=Path, default=OUTPUT_DIR / "latest.html")
+    preview.add_argument("--scores", type=Path, default=RESPONSES_DIR / "qwen3guard_refusals.jsonl")
+    preview.add_argument("--port", type=int, default=8765)
     args = parser.parse_args(argv)
+    if args.cmd == "preview":
+        from .preview import serve
+
+        serve(args.page, args.scores, args.port)
+        return
     if args.cmd in (None, "build"):
         if args.cmd is None:
             args = b.parse_args([])

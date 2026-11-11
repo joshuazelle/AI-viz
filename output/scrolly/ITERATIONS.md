@@ -75,21 +75,24 @@ Critique from the screenshots:
   answers, the rest folded into "other". Panels made taller so 3–4% boxes get labels. A `BLOCKLIST`
   in `textfeatures/masking.py` can still hide specific words (currently empty).
 
-## v07: local refusal uncertainty explorer (review build)
+## v07: optional local refusal uncertainty explorer (review build)
 
-- Integrated the finalized explorer into the renderer after the judges chapter,
-  with baseline-ring/ablated-fill glyphs, linked histogram markers, bin selection,
-  filters, keyboard selection, and local response inspection. Original chapter
-  templates, numbering, and embedded aggregate data remain unchanged from v06.
-- Scores and response text are loaded only from a local file in browser memory.
-  No score dataset or raw text is embedded. Pages deployment remains pinned to v06.
-- Exactly 0.5 is No refusal; the uncertainty interval includes both 0.35 and 0.65.
-  Reject boolean/blank/out-of-range scores and skip malformed non-object records.
-- Unchanged eight-word leak check passed on all 3,000 original prompts and answers.
-  Existing QA passed at desktop/mobile in light/dark: no errors or overflow, all
-  figures, tooltips, table views, and theme controls work.
-- Explorer QA passed with synthetic edge cases and the local 2,000-score export
-  (1,000 pairs), including safe text rendering, linked views, mobile layout, no
-  network requests, and no persistence. The resize check waits for the existing
-  chart resize debounce before assessing page width. QA screenshots contain only
-  synthetic explorer text; raw data is not committed.
+- Adds the finalized explorer after the judges chapter, preserving original
+  chapters, numbering, styling, and embedded aggregate data.
+- Baseline-ring/ablated-fill paired dots, linked histograms, filters, overlapping
+  point selection, and the prompt/response inspector are retained. Exactly 0.5
+  is No refusal; the uncertainty interval includes 0.35 and 0.65.
+- No file picker or score data in the generated HTML. The browser requests the
+  separate `qwen3guard_refusals.jsonl`. If unavailable, the explorer stays empty
+  with a message. The original essay remains usable.
+- `python -m scrolly_pipeline preview` serves the latest build and the optional
+  score file from Git-ignored `responses/`, on 127.0.0.1 only. It copies no raw data
+  into output, serves only these two resources, and disables response caching.
+  Optional `--page`, `--scores`, and `--port` select local preview inputs.
+- The normal build still requires only the original evaluation files. The
+  unchanged eight-word leak check passes on all 3,000 original texts, and the
+  public embedded data matches v06 exactly. Pages remains pinned to v06.
+- Browser QA passed for missing files, file:// opening, automatic local loading,
+  threshold boundaries, linked selection, filters, safe text rendering, and
+  responsive layout. The real local export loads 2,000 scores / 1,000 pairs
+  without page errors or external requests. QA screenshots use synthetic text.

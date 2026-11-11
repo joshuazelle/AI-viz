@@ -2,9 +2,27 @@
 
 import argparse
 import json
+import shutil
+import tempfile
+from contextlib import contextmanager
+from threading import Thread
 from pathlib import Path
 
 from playwright.sync_api import expect, sync_playwright
+
+from ..preview import make_server
+
+
+@contextmanager
+def local_preview(page, scores):
+    with make_server(page, scores, 0) as server:
+        worker = Thread(target=server.serve_forever, daemon=True)
+        worker.start()
+        try:
+            yield f"http://127.0.0.1:{server.server_port}/"
+        finally:
+            server.shutdown()
+            worker.join()
 
 
 def check(html_path: Path, out_dir: Path, scores: Path | None = None) -> dict:
@@ -24,7 +42,13 @@ def check(html_path: Path, out_dir: Path, scores: Path | None = None) -> dict:
                {**fixture[0], "id": "blank", "p_refusal_yes": " "},
                {**fixture[0], "id": "range", "p_refusal_yes": 1.1}]
     errors, requests = [], []
-    with sync_playwright() as playwright:
+    with tempfile.TemporaryDirectory() as directory, sync_playwright() as playwright:
+        local_scores = Path(directory) / 'qwen3guard_refusals.jsonl'
+        with local_preview(html_path, local_scores) as preview_url:
+            return check_browser(playwright, html_path, out_dir, scores, local_scores, preview_url, fixture, invalid, errors, requests)
+
+
+def check_browser(playwright, html_path, out_dir, scores, local_scores, preview_url, fixture, invalid, errors, requests):
         browser = playwright.chromium.launch(channel="chrome", headless=True)
         page = browser.new_page(viewport={"width": 1440, "height": 900})
         page.on("pageerror", lambda error: errors.append(str(error)))
@@ -34,10 +58,13 @@ def check(html_path: Path, out_dir: Path, scores: Path | None = None) -> dict:
         expect(page.locator("#probability-lab")).to_have_count(1)
         expect(page.locator(".pl-pairmark")).to_have_count(0)
         storage = page.evaluate("JSON.stringify(localStorage)")
-        page.locator("#pl-upload").set_input_files({
-            "name": "fixture.jsonl", "mimeType": "application/json",
-            "buffer": "\n".join(json.dumps(row) for row in fixture + invalid).encode(),
-        })
+        expect(page.locator('input[type="file"]')).to_have_count(0)
+        expect(page.locator("#pl-status")).to_contain_text("qwen3guard_refusals.jsonl")
+        page.goto(preview_url)
+        expect(page.locator(".pl-pairmark")).to_have_count(0)
+        expect(page.locator("#pl-status")).to_contain_text("To view these plots")
+        local_scores.write_text("\n".join(json.dumps(row) for row in fixture + invalid))
+        page.reload()
         expect(page.locator("#pl-status")).to_contain_text("10 scored responses, 5 complete pairs")
         expect(page.locator(".pl-pairmark")).to_have_count(5)
         expect(page.locator("#pl-kpis .pl-kpi").last.locator("b")).to_have_text("6")
@@ -71,21 +98,23 @@ def check(html_path: Path, out_dir: Path, scores: Path | None = None) -> dict:
             page.locator("#probability-lab").scroll_into_view_if_needed()
             page.wait_for_function("document.documentElement.scrollWidth <= innerWidth")
             page.screenshot(path=str(out_dir / f"uncertainty-{width}-{scheme}.png"))
+        local_scores.unlink()
         page.reload()
         expect(page.locator(".pl-pairmark")).to_have_count(0)
         assert "PRIVATE_SENTINEL" not in page.content()
         result = {"synthetic_checks": "passed", "real_scores": None}
         if scores:
-            page.locator("#pl-upload").set_input_files(str(scores.resolve()))
+            shutil.copyfile(scores, local_scores)
+            page.reload()
             expect(page.locator("#pl-status")).to_contain_text("2000 scored responses, 1000 complete pairs")
             expect(page.locator(".pl-pairmark")).to_have_count(1000)
             result["real_scores"] = {"scored": 2000, "pairs": 1000}
         assert not errors, errors
-        assert not requests, "Local import triggered a network request"
-        result.update(page_errors=errors, network_requests=requests)
+        assert all(url in (preview_url, preview_url + "qwen3guard_refusals.jsonl") for url in requests), "Unexpected network request"
+        result.update(page_errors=errors, external_requests=[])
         browser.close()
-    (out_dir / "uncertainty.json").write_text(json.dumps(result, indent=2))
-    return result
+        (out_dir / "uncertainty.json").write_text(json.dumps(result, indent=2))
+        return result
 
 
 if __name__ == "__main__":
