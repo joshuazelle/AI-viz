@@ -14,6 +14,7 @@ course-materials/
 
 # Model responses: raw harmful text, never commit
 responses/
+qwen3guard*.jsonl
 *.7z
 # prints raw responses in its outputs
 notebooks/inspect_responses.ipynb

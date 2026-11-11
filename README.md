@@ -56,13 +56,15 @@ uv sync --extra mac    # Mac, includes mlx-lm
 ```
 
 ## Scrollytelling page
-A visual essay on the baseline vs. ablated Qwen3.5-4B responses, built by `scrolly_pipeline/` into a single self-contained HTML file. It shows only aggregates and stylized examples, and a build-time leak check fails if the page shares any 8-word run with a prompt or model answer.
+A visual essay on the baseline vs. ablated Qwen3.5-4B responses, built by `scrolly_pipeline/` into a single self-contained HTML file. It shows aggregates, stylized examples, and anonymous per-pair uncertainty scores, and a build-time leak check fails if the page shares any 8-word run with a prompt or model answer.
 
-Final version: `output/scrolly/v06/index.html`, live at https://joshuazelle.github.io/AI-viz/ (deployed by `.github/workflows/pages.yml`; iteration notes in `output/scrolly/ITERATIONS.md`).
+Final version: `output/scrolly/v07/index.html`, live at https://joshuazelle.github.io/AI-viz/ (deployed by `.github/workflows/pages.yml`; iteration notes in `output/scrolly/ITERATIONS.md`).
 
-To rebuild (needs `responses.7z` extracted into `responses/`):
+To rebuild, extract `responses.7z` into `responses/` and obtain `qwen3guard_refusals.jsonl` separately from your teammate. Place it in the same Git-ignored folder:
 ```
 uv sync --group viz            # add --extra mac on Mac
 uv run --group viz python -m scrolly_pipeline build
 ```
 Each build goes to the next `output/scrolly/vNN/`, with screenshots and QA reports in `vNN/shots/` (not committed).
+
+To preview, run `uv run --group viz python -m scrolly_pipeline preview`. The generated page includes anonymous scores only; original IDs, prompts, and responses are never embedded or published.

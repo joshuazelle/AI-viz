@@ -7,7 +7,8 @@
       and removing it at inference time unlocks harmful answers across every category we tested. A few caveats:
     </p>
     <ul>
-      <li><strong>The judge is a model too.</strong> “Harmful” means {{ exp.judge }} labelled the answer unsafe. We did not check answers by hand, and the judge makes mistakes in both directions.</li>
+      <li><strong>The judge is a model too.</strong> “Harmful” means {{ exp.judge }} labelled the answer unsafe. We did not verify all answers by hand, and the judge can make mistakes in both directions.</li>
+      <li><strong>Refusal probabilities are evaluator scores, not ground truth.</strong> Our probability analysis uses Qwen3Guard's Yes/No output-token logits. These scores are not calibrated measures of whether an answer truly constitutes a refusal.</li>
       <li><strong>The keyword judge is crude</strong>, as chapter 6 shows. Treat any single attack-success number with suspicion.</li>
       <li><strong>Truncation.</strong> Many ablated answers hit the generation limit, so they were judged on a partial answer.</li>
       <li><strong>Small groups.</strong> Each framing has 30–40 prompts and some category × severity cells fewer than 10. We show intervals and fade small cells for that reason.</li>
