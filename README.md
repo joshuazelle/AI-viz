@@ -1,7 +1,6 @@
-
-
-
 # Vis4AI — Refusal Behavior and Refusal-Direction Ablation
+
+**Read the visual essay [here](https://joshuazelle.github.io/AI-viz/)**
 
 ## Overview
 
@@ -57,9 +56,9 @@ uv sync --extra mac    # Mac, includes mlx-lm
 ```
 
 ## Scrollytelling page
-A visual essay on the baseline vs. ablated Qwen3-4B responses, built by `scrolly_pipeline/` into a single self-contained HTML file. It shows only aggregates and stylized examples, and a build-time leak check fails if the page shares any 8-word run with a prompt or model answer.
+A visual essay on the baseline vs. ablated Qwen3.5-4B responses, built by `scrolly_pipeline/` into a single self-contained HTML file. It shows only aggregates and stylized examples, and a build-time leak check fails if the page shares any 8-word run with a prompt or model answer.
 
-Final version: `output/scrolly/v05/index.html` (iteration notes in `output/scrolly/ITERATIONS.md`).
+Final version: `output/scrolly/v06/index.html`, live at https://joshuazelle.github.io/AI-viz/ (deployed by `.github/workflows/pages.yml`; iteration notes in `output/scrolly/ITERATIONS.md`).
 
 To rebuild (needs `responses.7z` extracted into `responses/`):
 ```
