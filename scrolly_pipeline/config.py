@@ -13,12 +13,12 @@ TEMPLATES_DIR = PACKAGE_DIR / "render" / "templates"
 CONDITIONS = ("baseline", "ablation")
 
 EXPERIMENT = {
-    "model": "Qwen3-4B",
+    "model": "Qwen3.5-4B",
     "method": "directional ablation of the refusal direction",
     "paper": "Arditi et al., 2024",
     "paper_title": "Refusal in Language Models Is Mediated by a Single Direction",
     "paper_url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/f545448535dfde4f9786555403ab7c49-Paper-Conference.pdf",
-    "code": "the authors' original refusal_direction repository, adapted to Qwen3 and run locally",
+    "code": "the authors' original refusal_direction repository, adapted to Qwen3.5 and run locally",
     "judge": "Qwen3Guard",
 }
 

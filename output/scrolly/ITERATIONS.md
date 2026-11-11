@@ -65,3 +65,8 @@ Critique from the screenshots:
 - Final QA: 0 console errors in all four viewport/theme combinations, no horizontal overflow at 1440 and
   390 px, every chart renders, every tooltip shows, every table view has rows, theme toggle works,
   leak check passes on all 3,000 prompts and answers.
+
+## v06: model name
+
+- The model is Qwen3.5-4B, not Qwen3-4B: corrected in the page copy, the meta description and the methods
+  section (the judge, Qwen3Guard, is unchanged). Same QA as v05, all checks pass.

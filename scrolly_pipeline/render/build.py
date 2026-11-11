@@ -38,7 +38,7 @@ JS_FILES = [
 ]
 
 DESCRIPTION = (
-    "A visual essay: removing the refusal direction from Qwen3-4B and asking it 1,000 harmful requests again. "
+    "A visual essay: removing the refusal direction from Qwen3.5-4B and asking it 1,000 harmful requests again. "
     "No model outputs are shown."
 )
 
